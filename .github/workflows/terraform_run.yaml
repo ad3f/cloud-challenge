@@ -53,7 +53,6 @@ jobs:
       - name: Update Pull Request
         uses: actions/github-script@v6.1.0
         if: github.event_name == 'pull_request'
-        working-directory: ./terraform
         env:
           PLAN: 'terraform\n${{ steps.plan.outputs.stdout }}'
         with:
