@@ -8,21 +8,20 @@ table = client.Table(tableName)
 
 
 def lambda_handler(event, context):
-  
-    table.update_item(
-    Key={
-        'DB_ITEM': 'visitors',
-    },
-    UpdateExpression='SET CALC_TOTAL = CALC_TOTAL + :val1',
-    ExpressionAttributeValues={
-        ':val1': 1
-    }
-    )
-    response = table.get_item(
-      Key = {
-        'DB_ITEM' : 'visitors'
-      }
-    )
+    
+    res = table.get_item(Key = {'DB_ITEM' : 'visitors'})
+    
+    if "Item" in res:
+        print("UPDATE")
+        table.update_item(
+            Key={'DB_ITEM': 'visitors',},
+            UpdateExpression='SET CALC_TOTAL = CALC_TOTAL + :val1',
+            ExpressionAttributeValues={':val1': 1},
+        )
+    else:
+        table.put_item(Item = { "DB_ITEM" : "visitors", "CALC_TOTAL" : 1, })
+    
+    response = table.get_item(Key = {'DB_ITEM' : 'visitors'})
 
     data = {
         'statusCode': 200,

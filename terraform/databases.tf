@@ -13,6 +13,7 @@ resource "aws_dynamodb_table" "crc_db" {
   }
 }
 
+
 resource "aws_iam_policy" "lambda_dynamodb" {
   name        = "CRC_Lambda_DynamoDB_Read_Write"
   description = "Policy to allow lambda function within the cloud resume challenge to read and write to dynamodb table holding visitor count"
