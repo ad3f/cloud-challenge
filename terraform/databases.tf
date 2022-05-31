@@ -13,26 +13,6 @@ resource "aws_dynamodb_table" "crc_db" {
   }
 }
 
-
-resource "aws_dynamodb_table_item" "db_counter_item" {
-  depends_on = [
-    aws_dynamodb_table.crc_db
-  ]
-  table_name = aws_dynamodb_table.crc_db.name
-  hash_key   = aws_dynamodb_table.crc_db.hash_key
-
-  item = <<ITEM
-    {
-        "DB_ITEM": {
-            "S" : "visitors"
-        },
-        "CALC_TOTAL":{
-            "N" : "0"
-        }
-    }
-    ITEM
-}
-
 resource "aws_iam_policy" "lambda_dynamodb" {
   name        = "CRC_Lambda_DynamoDB_Read_Write"
   description = "Policy to allow lambda function within the cloud resume challenge to read and write to dynamodb table holding visitor count"
