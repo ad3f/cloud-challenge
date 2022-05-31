@@ -10,9 +10,8 @@ jobs:
   terraform:
     name: "Terraform"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.terraform }}
+    env:
+      working-directory: ./terraform
     permissions:
       id-token: write
       contents: read
@@ -33,23 +32,28 @@ jobs:
 
       - name: Terraform Format
         id: fmt
+        working-directory: ${{env.working-dir}}
         run: terraform fmt -check
 
       - name: Terraform Init
+        working-directory: ${{env.working-dir}}
         id: init
         run: terraform init
 
       - name: Terraform Validate
+        working-directory: ${{env.working-dir}}
         id: validate
         run: terraform validate -no-color
 
       - name: Terraform Plan
+        working-directory: ${{env.working-dir}}
         id: plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
 
       - name: Update Pull Request
+        working-directory: ${{env.working-dir}}
         uses: actions/github-script@v6.1.0
         if: github.event_name == 'pull_request'
         env:
@@ -80,9 +84,11 @@ jobs:
             })
 
       - name: Terraform Plan Status
+        working-directory: ${{env.working-dir}}
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
       - name: Terraform Apply
+        working-directory: ${{env.working-dir}}
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
