@@ -1,0 +1,28 @@
+name: Upload Resume Website
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ap-southeast-2
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          role-session-name: GithubActionsResumeUpload
+
+      
+      - name: Deploy static resume site content to S3 bucket
+        run: aws s3 sync src/ s3://${{ secrets.AWS_STATIC_RESUME_BUCKET }} --acl public-read --follow-symlinks --size-only --delete 
+      
