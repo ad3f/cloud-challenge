@@ -21,7 +21,7 @@ resource "aws_s3_bucket_acl" "cv_bucket_acl" {
 }
 
 resource "aws_s3_bucket_public_access_block" "cv_public_block" {
-  bucket = aws_s3_bucket.cv_bucket.id
+  bucket              = aws_s3_bucket.cv_bucket.id
   block_public_policy = false
 }
 
@@ -50,17 +50,17 @@ resource "aws_s3_bucket_policy" "allow_access_cf" {
 
 data "aws_iam_policy_document" "allow_access_cf" {
   statement {
-          principals {
-            type = "AWS" 
-            identifiers = [aws_cloudfront_origin_access_identity.oad_s3resume.iam_arn]
-          }
-          actions = [
-              "s3:GetObject", 
-              "s3:ListBucket"
-              ]
-          resources = [
-            "${aws_s3_bucket.cv_bucket.arn}/*",
-            "${aws_s3_bucket.cv_bucket.arn}"
-          ]
-        }
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.oad_s3resume.iam_arn]
+    }
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "${aws_s3_bucket.cv_bucket.arn}/*",
+      "${aws_s3_bucket.cv_bucket.arn}"
+    ]
+  }
 }

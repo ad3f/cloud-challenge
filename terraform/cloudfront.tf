@@ -21,7 +21,7 @@ resource "aws_cloudfront_distribution" "resume_distribution" {
 
   default_cache_behavior {
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods   = ["HEAD","GET"]
+    cached_methods   = ["HEAD", "GET"]
     target_origin_id = "s3ResumeOrigin"
 
     forwarded_values {

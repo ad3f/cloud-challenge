@@ -34,7 +34,7 @@ resource "aws_acm_certificate" "cv_cert" {
 }
 
 resource "aws_acm_certificate_validation" "cv_cert_valid" {
-provider = aws.aws_us1
+  provider        = aws.aws_us1
   certificate_arn = aws_acm_certificate.cv_cert.arn
 }
 
