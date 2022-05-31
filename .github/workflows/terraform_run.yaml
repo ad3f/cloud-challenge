@@ -36,26 +36,26 @@ jobs:
         run: terraform fmt -check
 
       - name: Terraform Init
-        working-directory: ${{env.working-dir}}
         id: init
+        working-directory: ${{env.working-dir}}
         run: terraform init
 
       - name: Terraform Validate
-        working-directory: ${{env.working-dir}}
         id: validate
+        working-directory: ${{env.working-dir}}
         run: terraform validate -no-color
 
       - name: Terraform Plan
-        working-directory: ${{env.working-dir}}
         id: plan
         if: github.event_name == 'pull_request'
+        working-directory: ${{env.working-dir}}
         run: terraform plan -no-color -input=false
         continue-on-error: true
 
       - name: Update Pull Request
-        working-directory: ${{env.working-dir}}
         uses: actions/github-script@v6.1.0
         if: github.event_name == 'pull_request'
+        working-directory: ${{env.working-dir}}
         env:
           PLAN: 'terraform\n${{ steps.plan.outputs.stdout }}'
         with:
@@ -84,11 +84,11 @@ jobs:
             })
 
       - name: Terraform Plan Status
-        working-directory: ${{env.working-dir}}
         if: steps.plan.outcome == 'failure'
+        working-directory: ${{env.working-dir}}
         run: exit 1
 
       - name: Terraform Apply
-        working-directory: ${{env.working-dir}}
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        working-directory: ${{env.working-dir}}
         run: terraform apply -auto-approve -input=false
