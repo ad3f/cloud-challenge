@@ -2,9 +2,9 @@ resource "aws_cloudfront_origin_access_identity" "oad_s3resume" {
 }
 
 resource "aws_cloudfront_distribution" "resume_distribution" {
-depends_on = [
-  aws_lambda_function.lambda_visit_counter
-]
+  depends_on = [
+    aws_lambda_function.lambda_visit_counter
+  ]
   origin {
     domain_name = aws_s3_bucket.cv_bucket.bucket_regional_domain_name
     origin_id   = "s3ResumeOrigin"

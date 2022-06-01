@@ -1,12 +1,12 @@
 data "archive_file" "lambda_counter" {
   type        = "zip"
-  source_file  = "../functions/increment_count.py"
+  source_file = "../functions/increment_count.py"
   output_path = "${path.module}/lambda/cloud_challenge_increment_fnc.zip"
 }
 
 data "archive_file" "lambda_fetch" {
   type        = "zip"
-  source_file  = "../functions/fetch_count.py"
+  source_file = "../functions/fetch_count.py"
   output_path = "${path.module}/lambda/cloud_challenge_fetch_fnc.zip"
 }
 
@@ -33,7 +33,7 @@ resource "aws_lambda_function" "lambda_visit_counter" {
   handler          = "increment_count.lambda_handler"
   source_code_hash = data.archive_file.lambda_counter.output_base64sha256
   role             = aws_iam_role.lambda_exec.arn
-  publish = true
+  publish          = true
 
   environment {
     variables = {
