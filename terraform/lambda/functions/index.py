@@ -12,7 +12,6 @@ def lambda_handler(event, context):
     res = table.get_item(Key = {'DB_ITEM' : 'visitors'})
     
     if "Item" in res:
-        print("UPDATE")
         table.update_item(
             Key={'DB_ITEM': 'visitors',},
             UpdateExpression='SET CALC_TOTAL = CALC_TOTAL + :val1',
@@ -25,7 +24,7 @@ def lambda_handler(event, context):
 
     data = {
         'statusCode': 200,
-        'body': json.dumps(str(response.get('Item').get('CALC_TOTAL'))),
+        'body' : response["Item"]["CALC_TOTAL"],
         'headers': {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
