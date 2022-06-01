@@ -5,25 +5,18 @@ client = boto3.resource('dynamodb')
 tableName = os.environ['TABLE_NAME']
 table = client.Table(tableName)
 
-
 def lambda_handler(event, context):
     
     res = table.get_item(Key = {'DB_ITEM' : 'visitors'})
     
     if "Item" in res:
-        table.update_item(
-            Key={'DB_ITEM': 'visitors',},
-            UpdateExpression='SET CALC_TOTAL = CALC_TOTAL + :val1',
-            ExpressionAttributeValues={':val1': 1},
-        )
+        counter = res["Item"]["CALC_TOTAL"]
     else:
-        table.put_item(Item = { "DB_ITEM" : "visitors", "CALC_TOTAL" : 1, })
-    
-    response = table.get_item(Key = {'DB_ITEM' : 'visitors'})
+        counter = 0
 
     data = {
         'statusCode': 200,
-        'body' : response["Item"]["CALC_TOTAL"],
+        'body' : counter,
         'headers': {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'

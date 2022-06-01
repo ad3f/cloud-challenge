@@ -35,7 +35,32 @@ resource "aws_apigatewayv2_stage" "lambda" {
   }
 }
 
-resource "aws_apigatewayv2_integration" "visitor_counter" {
+resource "aws_apigatewayv2_integration" "visitor_fetch" {
+  api_id                 = aws_apigatewayv2_api.lambda.id
+  integration_uri        = aws_lambda_function.lambda_visit_fetch.invoke_arn
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "visitor_fetch" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "GET /api/visitors"
+  target    = "integrations/${aws_apigatewayv2_integration.visitor_fetch.id}"
+}
+
+resource "aws_lambda_permission" "api_gw" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_visit_fetch.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+#--------------------------------------------------------------
+
+resource "aws_apigatewayv2_integration" "visitor_increment" {
   api_id                 = aws_apigatewayv2_api.lambda.id
   integration_uri        = aws_lambda_function.lambda_visit_counter.invoke_arn
   integration_type       = "AWS_PROXY"
@@ -43,13 +68,13 @@ resource "aws_apigatewayv2_integration" "visitor_counter" {
   payload_format_version = "2.0"
 }
 
-resource "aws_apigatewayv2_route" "visitor_counter" {
+resource "aws_apigatewayv2_route" "visitor_increment" {
   api_id    = aws_apigatewayv2_api.lambda.id
-  route_key = "GET /api/visitors"
-  target    = "integrations/${aws_apigatewayv2_integration.visitor_counter.id}"
+  route_key = "POST /api/visitors"
+  target    = "integrations/${aws_apigatewayv2_integration.visitor_increment.id}"
 }
 
-resource "aws_lambda_permission" "api_gw" {
+resource "aws_lambda_permission" "api_gw_increment" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_visit_counter.function_name
@@ -57,4 +82,3 @@ resource "aws_lambda_permission" "api_gw" {
 
   source_arn = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
-
