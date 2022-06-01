@@ -3,7 +3,7 @@ resource "aws_apigatewayv2_api" "lambda" {
   protocol_type = "HTTP"
   cors_configuration {
     allow_origins = ["*"]
-    allow_methods = ["POST", "GET", "OPTIONS"]
+    allow_methods = ["POST", "GET", "OPTIONS", "PUT"]
     allow_headers = ["content-type"]
     max_age       = 300
   }
@@ -70,7 +70,7 @@ resource "aws_apigatewayv2_integration" "visitor_increment" {
 
 resource "aws_apigatewayv2_route" "visitor_increment" {
   api_id    = aws_apigatewayv2_api.lambda.id
-  route_key = "POST /api/visitors"
+  route_key = "PUT /api/visitors"
   target    = "integrations/${aws_apigatewayv2_integration.visitor_increment.id}"
 }
 
